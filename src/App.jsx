@@ -5,7 +5,7 @@ function App() {
   const [combo, setCombo] = useState([])
 
   useEffect(() => {
-    setCombo(['Snow', 'Ball', 'Game', 'Night', 'Club', 'House', 'Plant']);
+    setCombo(['SNOW', 'BALL', 'GAME', 'NIGHT', 'CLUB', 'HOUSE', 'PLANT']);
   }, [])
 
   return (
@@ -21,6 +21,8 @@ function App() {
           </div>
         </div>
       ))}
+
+
     </div>
   )
 }
