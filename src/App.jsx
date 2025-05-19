@@ -71,6 +71,34 @@ function App() {
     setShownCombo(newCombo);  
   }, [input])
 
+  const handleSubmit = () => {
+    if (input.length != combo[currentIndex].length) {
+      return;
+    }
+    console.log("Input submitted:", input);
+
+    // Correct Answer
+    if (input === combo[currentIndex]) {
+      let newHints = [...hints];
+      newHints[currentIndex] = combo[currentIndex].length;
+      setHints(newHints);
+      setInput('');
+      setCurrentIndex(currentIndex + 1);
+      setAnswer(combo[currentIndex]);
+    }
+    // Incorrect Answer
+    else {
+      let newHints = [...hints];
+      
+      // Only increment hint if not already at max
+      if (hints[currentIndex] + 1 < combo[currentIndex].length) {
+        newHints[currentIndex] = Math.min(newHints[currentIndex] + 1, combo[currentIndex].length);
+      }
+
+      setHints(newHints);
+    }
+  }
+
   return (
     <div className='app-container flex flex-col items-center justify-center h-screen bg-blue-200'>
       <h1 className='absolute text-4xl font-bold text-center top-10'>
@@ -93,6 +121,11 @@ function App() {
           type='text'
           value={input}
           onChange={handleInputChange}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSubmit();
+            }
+          }}
           maxLength={combo[currentIndex]?.length || 10}
         />
       </div>
