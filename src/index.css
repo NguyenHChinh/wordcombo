@@ -3,3 +3,7 @@
 *{
   font-family: 'Roboto Mono', monospace;
 }
+
+body{
+  background-color: rgba(29,40,61,255)
+}

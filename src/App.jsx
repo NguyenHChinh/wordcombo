@@ -8,6 +8,7 @@ function App() {
   const [shownCombo, setShownCombo] = useState([])
   const [answer, setAnswer] = useState('BALL')
   const [input, setInput] = useState('')
+  const [guesses, setGuesses] = useState(0)
 
   useEffect(() => {
     setCombo(['SNOW', 'BALL', 'GAME', 'NIGHT', 'CLUB', 'HOUSE', 'PLANT']);
@@ -85,6 +86,7 @@ function App() {
       setInput('');
       setCurrentIndex(currentIndex + 1);
       setAnswer(combo[currentIndex]);
+      setGuesses(guesses + 1);
     }
     // Incorrect Answer
     else {
@@ -96,13 +98,14 @@ function App() {
       }
 
       setHints(newHints);
+      setGuesses(guesses + 1);
     }
   }
 
   return (
-    <div className='app-container flex flex-col items-center justify-center h-screen bg-blue-200'>
+    <div className='app-container flex flex-col items-center justify-center h-screen text-slate-100'>
       <h1 className='absolute text-4xl font-bold text-center top-10'>
-        WordCombo
+        WordCombo |  {new Date().toLocaleDateString()}
       </h1>
 
       <div className='mt-8'>
@@ -115,9 +118,9 @@ function App() {
         ))}
       </div>
 
-      <div className='input-container flex items-center justify-center mt-12'>
+      <div className='input-container flex flex-col items-center justify-center mt-6 w-3/5 max-w-md'>
         <input
-          className='border-2 border-gray-300 rounded-lg p-2 text-center text-2xl w-1/ bg-white 3'
+          className='border-2 border-gray-300 rounded-lg p-2 text-center text-2xl text-slate-700 w-full bg-white'
           type='text'
           value={input}
           onChange={handleInputChange}
@@ -128,7 +131,11 @@ function App() {
           }}
           maxLength={combo[currentIndex]?.length || 10}
         />
+        <div className='mt-4 w-full text-left'>
+          Guesses: {guesses}
+        </div>
       </div>
+
     </div>
   )
 }
