@@ -22,13 +22,33 @@ function App() {
 
     // Cycling through each word in the combo
     for (let i = 1; i < tempHints.length; i++) {
-      let comboHints = newCombo[i].substring(0, tempHints[i]);
-      let comboBlanks = '_'.repeat(newCombo[i].length - tempHints[i]);
-      newCombo[i] = comboHints + comboBlanks;
+      const shown = newCombo[i].substring(0, tempHints[i]);
+      const blanks = '_'.repeat(newCombo[i].length - tempHints[i]);
+      newCombo[i] = shown + blanks;
     }
 
-    setShownCombo(newCombo);  
-  }, [combo, hints])
+    setShownCombo(newCombo);
+
+    // Initialize input value based on revealed part if first load or index changed
+    const base = combo[currentIndex]?.substring(0, tempHints[currentIndex]) ?? '';
+    setInput(base);
+  }, [combo, hints, currentIndex]);
+
+  const handleInputChange = (e) => {
+    const raw = e.target.value.toUpperCase();
+    const base = combo[currentIndex].substring(0, hints[currentIndex]);
+    let newInput = raw;
+
+    // Ensure input starts with revealed part
+    if (!raw.startsWith(base)) {
+      newInput = base + raw.slice(base.length).replace(/[^A-Z]/g, '');
+    }
+
+    // Trim to answer length
+    newInput = newInput.slice(0, combo[currentIndex].length);
+
+    setInput(newInput);
+  };
 
   useEffect(() => {
     if (combo.length === 0) return;
@@ -71,8 +91,8 @@ function App() {
           className='border-2 border-gray-300 rounded-lg p-2 text-center text-2xl w-1/ bg-white 3'
           type='text'
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          maxLength={answer.length}
+          onChange={handleInputChange}
+          maxLength={combo[currentIndex]?.length || 10}
           placeholder={previousWord}
         />
       </div>
