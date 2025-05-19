@@ -4,11 +4,32 @@ import './App.css'
 function App() {
   const [combo, setCombo] = useState([])
   const [previousWord, setPreviousWord] = useState('SNOW ..?')
+  const [hints, setHints] = useState([0, 1, 1, 1, 1, 1 , 1])
+  const [hintIndex, setHintIndex] = useState(0)
+  const [shownCombo, setShownCombo] = useState([])
 
   useEffect(() => {
     setCombo(['SNOW', 'BALL', 'GAME', 'NIGHT', 'CLUB', 'HOUSE', 'PLANT']);
   }, [])
 
+  useEffect(() => {
+    if (combo.length === 0) return;
+
+    let newCombo = [...combo];
+    let tempHints = [...hints];
+
+    console.log(newCombo);
+    console.log(tempHints);
+
+    // Cycling through each word in the combo
+    for (let i = 1; i < tempHints.length; i++) {
+      let comboHints = newCombo[i].substring(0, tempHints[i]);
+      let comboBlanks = '_'.repeat(newCombo[i].length - tempHints[i]);
+      newCombo[i] = comboHints + comboBlanks;
+    }
+
+    setShownCombo(newCombo);  
+  }, [combo, hints])
 
   return (
     <div className='app-container flex flex-col items-center justify-center h-screen bg-blue-200'>
@@ -16,7 +37,7 @@ function App() {
         WordChain
       </h1>
 
-      {combo.map((word, index) => (
+      {shownCombo.map((word, index) => (
         <div key={index} className='word-container flex items-center justify-center'>
           <div className='bg-transparent my-4'>
             <h2 className='text-4xl tracking-widest font-semibold'>{word}</h2>
