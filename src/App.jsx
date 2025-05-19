@@ -3,10 +3,12 @@ import './App.css'
 
 function App() {
   const [combo, setCombo] = useState([])
-  const [previousWord, setPreviousWord] = useState('SNOW ..?')
+  const [previousWord, setPreviousWord] = useState('')
   const [hints, setHints] = useState([0, 1, 1, 1, 1, 1 , 1])
-  const [hintIndex, setHintIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(1)
   const [shownCombo, setShownCombo] = useState([])
+  const [answer, setAnswer] = useState('BALL')
+  const [input, setInput] = useState('')
 
   useEffect(() => {
     setCombo(['SNOW', 'BALL', 'GAME', 'NIGHT', 'CLUB', 'HOUSE', 'PLANT']);
@@ -17,9 +19,6 @@ function App() {
 
     let newCombo = [...combo];
     let tempHints = [...hints];
-
-    console.log(newCombo);
-    console.log(tempHints);
 
     // Cycling through each word in the combo
     for (let i = 1; i < tempHints.length; i++) {
@@ -49,10 +48,11 @@ function App() {
         <input
           className='border-2 border-gray-300 rounded-lg p-2 text-center text-2xl w-1/ bg-white 3'
           type='text'
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          maxLength={answer.length}
           placeholder={previousWord}
-        >
-        
-        </input>
+        />
       </div>
     </div>
   )
