@@ -30,6 +30,28 @@ function App() {
     setShownCombo(newCombo);  
   }, [combo, hints])
 
+  useEffect(() => {
+    if (combo.length === 0) return;
+
+    let newCombo = [...combo];
+    let tempHints = [...hints];
+
+    // Cycling through each word in the combo
+    for (let i = 1; i < tempHints.length; i++) {
+      let comboHints = newCombo[i].substring(0, tempHints[i]);
+      let comboBlanks = '_'.repeat(newCombo[i].length - tempHints[i]);
+      newCombo[i] = comboHints + comboBlanks;
+    }
+
+    if (input.length > 1) {
+      let comboHint = input.toUpperCase();
+      let comboBlanks = '_'.repeat(newCombo[currentIndex].length - input.length);
+      newCombo[currentIndex] = comboHint + comboBlanks;
+    }
+
+    setShownCombo(newCombo);  
+  }, [input])
+
   return (
     <div className='app-container flex flex-col items-center justify-center h-screen bg-blue-200'>
       <h1 className='absolute text-5xl font-bold text-center top-15'>
