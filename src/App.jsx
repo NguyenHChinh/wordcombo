@@ -75,7 +75,7 @@ function App() {
   return (
     <div className='app-container flex flex-col items-center justify-center h-screen bg-blue-200'>
       <h1 className='absolute text-5xl font-bold text-center top-15'>
-        WordChain
+        WordCombo
       </h1>
 
       {shownCombo.map((word, index) => (
