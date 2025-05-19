@@ -43,7 +43,7 @@ function App() {
       newCombo[i] = comboHints + comboBlanks;
     }
 
-    if (input.length > 1) {
+    if (input.length > tempHints[currentIndex]) {
       let comboHint = input.toUpperCase();
       let comboBlanks = '_'.repeat(newCombo[currentIndex].length - input.length);
       newCombo[currentIndex] = comboHint + comboBlanks;
