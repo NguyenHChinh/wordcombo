@@ -104,8 +104,10 @@ function App() {
 
   return (
     <div className='app-container flex flex-col items-center justify-center h-screen text-slate-100'>
-      <h1 className='absolute text-4xl font-bold text-center top-10'>
-        WordCombo |  {new Date().toLocaleDateString()}
+      <h1 className='absolute text-4xl font-bold text-center top-10 border-2 px-4 py-3 rounded-2xl'>
+        WordCombo<span className='text-lg text-slate-600'>.app</span>
+        <span className='px-2'>|</span>
+        {new Date().toLocaleDateString()}
       </h1>
 
       <div className='mt-8'>
