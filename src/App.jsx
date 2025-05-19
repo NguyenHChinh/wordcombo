@@ -3,7 +3,6 @@ import './App.css'
 
 function App() {
   const [combo, setCombo] = useState([])
-  const [previousWord, setPreviousWord] = useState('')
   const [hints, setHints] = useState([0, 1, 1, 1, 1, 1 , 1])
   const [currentIndex, setCurrentIndex] = useState(1)
   const [shownCombo, setShownCombo] = useState([])
@@ -58,9 +57,9 @@ function App() {
 
     // Cycling through each word in the combo
     for (let i = 1; i < tempHints.length; i++) {
-      let comboHints = newCombo[i].substring(0, tempHints[i]);
-      let comboBlanks = '_'.repeat(newCombo[i].length - tempHints[i]);
-      newCombo[i] = comboHints + comboBlanks;
+      let shown = newCombo[i].substring(0, tempHints[i]);
+      let blanks = '_'.repeat(newCombo[i].length - tempHints[i]);
+      newCombo[i] = shown + blanks;
     }
 
     if (input.length > tempHints[currentIndex]) {
@@ -74,17 +73,19 @@ function App() {
 
   return (
     <div className='app-container flex flex-col items-center justify-center h-screen bg-blue-200'>
-      <h1 className='absolute text-5xl font-bold text-center top-15'>
+      <h1 className='absolute text-4xl font-bold text-center top-10'>
         WordCombo
       </h1>
 
-      {shownCombo.map((word, index) => (
-        <div key={index} className='word-container flex items-center justify-center'>
-          <div className='bg-transparent my-4'>
-            <h2 className='text-4xl tracking-widest font-semibold'>{word}</h2>
+      <div className='mt-8'>
+        {shownCombo.map((word, index) => (
+          <div key={index} className='word-container flex items-center justify-center'>
+            <div className='bg-transparent my-2'>
+              <h2 className='text-3xl tracking-widest font-semibold'>{word}</h2>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
 
       <div className='input-container flex items-center justify-center mt-12'>
         <input
@@ -93,7 +94,6 @@ function App() {
           value={input}
           onChange={handleInputChange}
           maxLength={combo[currentIndex]?.length || 10}
-          placeholder={previousWord}
         />
       </div>
     </div>
