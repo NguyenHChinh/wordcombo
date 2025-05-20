@@ -6,10 +6,10 @@ function App() {
   const [hints, setHints] = useState([0, 1, 1, 1, 1, 1 , 1])
   const [currentIndex, setCurrentIndex] = useState(1)
   const [shownCombo, setShownCombo] = useState([])
-  const [answer, setAnswer] = useState('BALL')
   const [input, setInput] = useState('')
   const [guesses, setGuesses] = useState(0)
   const [evaluation, setEvaluation] = useState('')
+  const [gameOver, setGameOver] = useState(false);
 
   const shakeTimeoutRef = useRef(null);
 
@@ -94,7 +94,6 @@ function App() {
       setHints(newHints);
       setInput('');
       setCurrentIndex(currentIndex + 1);
-      setAnswer(combo[currentIndex]);
       setGuesses(guesses + 1);
     }
     // Incorrect Answer
@@ -122,12 +121,17 @@ function App() {
         }, 3000);
       }, 0);
     }
+
+    if (currentIndex == combo.length - 1) {
+      setCurrentIndex(1000);
+      setGameOver(true);
+    }
   }
 
   return (
     <div className='app-container flex flex-col items-center justify-center h-screen text-slate-100'>
       {/* Header */}
-      <h1 className='absolute text-4xl font-bold text-center top-10 border-2 px-4 py-3 rounded-2xl'>
+      <h1 className='absolute text-3xl font-bold text-center top-10 border-2 px-4 py-3 rounded-2xl'>
         WordCombo<span className='text-lg text-slate-600'>.app</span>
         <span className='px-2'>|</span>
         {new Date().toLocaleDateString()}
@@ -166,6 +170,17 @@ function App() {
         </div>
       </div>
 
+      {gameOver && (
+        <div className='absolute w-3/5 h-2/5 bg-slate-700 rounded-xl flex flex-col items-center justify-center'>
+          <button
+              onClick={() => setGameOver(false)}
+              className="absolute top-5 right-5 text-xs sm:text-sm md:text-base font-medium text-gray-300 hover:text-red-400 border border-gray-300 px-2 sm:px-3 py-0.5 sm:py-1 rounded">
+              Close
+          </button>
+          <h2 className='text-2xl font-bold text-center mb-4'>Today solved!</h2>
+          <p className='text-lg px-6 text-center'>You completed the combo in {guesses} guesses!</p>
+        </div>
+      )}
     </div>
   )
 }
