@@ -138,7 +138,7 @@ function App() {
         {shownCombo.map((word, index) => (
           <div
             key={index}
-            className={`word-container flex items-center justify-center ${index === currentIndex ? `bg-slate-600 + ${evaluation}` : 'bg-slate-400'} rounded-xl px-10 py-.5 m-1 transition-all duration-300`}>
+            className={`word-container flex items-center justify-center ${(index === currentIndex) ? `scale-110 bg-slate-600 + ${evaluation}` : ''} ${index === currentIndex - 1 ? 'scale-105 bg-slate-500' : 'bg-slate-400'} rounded-xl px-10 py-.5 m-3 transition-all duration-300`}>
             <div className='bg-transparent my-2'>
               <h2 className='text-2xl tracking-widest font-semibold'>{word}</h2>
             </div>
