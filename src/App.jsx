@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './App.css'
 
 function App() {
@@ -9,6 +9,9 @@ function App() {
   const [answer, setAnswer] = useState('BALL')
   const [input, setInput] = useState('')
   const [guesses, setGuesses] = useState(0)
+  const [evaluation, setEvaluation] = useState('')
+
+  const shakeTimeoutRef = useRef(null);
 
   useEffect(() => {
     setCombo(['SNOW', 'BALL', 'GAME', 'NIGHT', 'CLUB', 'HOUSE', 'PLANT']);
@@ -78,6 +81,12 @@ function App() {
     }
     console.log("Input submitted:", input);
 
+    if (shakeTimeoutRef.current) {
+      clearTimeout(shakeTimeoutRef.current);
+      shakeTimeoutRef.current = null;
+    }
+    setEvaluation("");
+
     // Correct Answer
     if (input === combo[currentIndex]) {
       let newHints = [...hints];
@@ -99,27 +108,45 @@ function App() {
 
       setHints(newHints);
       setGuesses(guesses + 1);
+
+      setTimeout(() => {
+        setEvaluation("shake");
+
+        if (shakeTimeoutRef.current) {
+          clearTimeout(shakeTimeoutRef.current);
+        }
+
+        shakeTimeoutRef.current = setTimeout(() => {
+          setEvaluation("");
+          shakeTimeoutRef.current = null;
+        }, 3000);
+      }, 0);
     }
   }
 
   return (
     <div className='app-container flex flex-col items-center justify-center h-screen text-slate-100'>
+      {/* Header */}
       <h1 className='absolute text-4xl font-bold text-center top-10 border-2 px-4 py-3 rounded-2xl'>
         WordCombo<span className='text-lg text-slate-600'>.app</span>
         <span className='px-2'>|</span>
         {new Date().toLocaleDateString()}
       </h1>
 
-      <div className='mt-8'>
+      {/* Main Content */}
+      <div className='combo-container mt-24'>
         {shownCombo.map((word, index) => (
-          <div key={index} className='word-container flex items-center justify-center'>
+          <div
+            key={index}
+            className={`word-container flex items-center justify-center ${index === currentIndex ? `bg-slate-600 + ${evaluation}` : 'bg-slate-400'} rounded-xl px-10 py-.5 m-1 transition-all duration-300`}>
             <div className='bg-transparent my-2'>
-              <h2 className='text-3xl tracking-widest font-semibold'>{word}</h2>
+              <h2 className='text-2xl tracking-widest font-semibold'>{word}</h2>
             </div>
           </div>
         ))}
       </div>
 
+      {/* Input Field */}
       <div className='input-container flex flex-col items-center justify-center mt-6 w-3/5 max-w-md'>
         <input
           className='border-2 border-gray-300 rounded-lg p-2 text-center text-2xl text-slate-700 w-full bg-white'
@@ -133,6 +160,7 @@ function App() {
           }}
           maxLength={combo[currentIndex]?.length || 10}
         />
+
         <div className='mt-4 w-full text-left'>
           Guesses: {guesses}
         </div>
