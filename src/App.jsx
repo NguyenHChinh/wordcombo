@@ -148,16 +148,19 @@ function App() {
   }
 
   return (
-    <div className='app-container flex flex-col items-center justify-center h-screen text-slate-100'>
+    <div className='app-container flex flex-col items-center justify-center text-slate-100'>
       {/* Header */}
-      <h1 className='absolute text-3xl font-bold text-center top-10 border-2 px-4 py-3 rounded-2xl'>
-        WordCombo<span className='text-lg text-slate-600'>.app</span>
-        <span className='px-2'>|</span>
-        {formatDate(new Date())}
-      </h1>
+      <div className='header-container border-b-2 border-slate-500 w-full max-w-md p-8'>
+        <h1 className='text-5xl text-center mt-2'>
+          <span className='font-bold tracking-wide'>WordCombo</span><span className='text-slate-500 tracking-tight'>.app</span>
+        </h1>
+        <h1 className='text-2xl text-center mt-2'>
+          {formatDate(new Date())}
+        </h1>
+      </div>
 
       {/* Main Content */}
-      <div className='combo-container mt-24'>
+      <div className='combo-container mt-8'>
         {shownCombo.map((word, index) => (
           <div
             key={index}
