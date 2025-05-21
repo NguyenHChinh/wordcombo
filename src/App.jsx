@@ -160,35 +160,37 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <div className='combo-container mt-8'>
-        {shownCombo.map((word, index) => (
-          <div
-            key={index}
-            className={`word-container flex items-center justify-center ${(index === currentIndex) ? `scale-110 bg-slate-600 + ${evaluation}` : ''} ${index === currentIndex - 1 ? 'scale-105 bg-slate-500' : 'bg-slate-400'} rounded-xl px-10 py-.5 m-3 transition-all duration-300`}>
-            <div className='bg-transparent my-2'>
-              <h2 className='text-2xl tracking-widest font-semibold'>{word}</h2>
+      <div className='main-container flex flex-col items-center justify-center mt-8 w-full max-w-md bg-slate-900 rounded-xl p-8'>
+        <div className='combo-container mt-8'>
+          {shownCombo.map((word, index) => (
+            <div
+              key={index}
+              className={`word-container flex items-center justify-center ${(index === currentIndex) ? `scale-110 bg-slate-600 + ${evaluation}` : ''} ${index === currentIndex - 1 ? 'scale-105 bg-slate-500' : 'bg-slate-400'} rounded-xl px-10 py-.5 m-3 transition-all duration-300`}>
+              <div className='bg-transparent my-2'>
+                <h2 className='text-2xl tracking-widest font-semibold'>{word}</h2>
+              </div>
             </div>
+          ))}
+        </div>
+
+        {/* Input Field */}
+        <div className='input-container flex flex-col items-center justify-center mt-6 w-3/5 max-w-md'>
+          <input
+            className='border-2 border-gray-300 rounded-lg p-2 text-center text-2xl text-slate-700 w-full bg-white'
+            type='text'
+            value={input}
+            onChange={handleInputChange}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSubmit();
+              }
+            }}
+            maxLength={combo[currentIndex]?.length || 10}
+          />
+
+          <div className='mt-4 w-full text-left'>
+            Guesses: {guesses}
           </div>
-        ))}
-      </div>
-
-      {/* Input Field */}
-      <div className='input-container flex flex-col items-center justify-center mt-6 w-3/5 max-w-md'>
-        <input
-          className='border-2 border-gray-300 rounded-lg p-2 text-center text-2xl text-slate-700 w-full bg-white'
-          type='text'
-          value={input}
-          onChange={handleInputChange}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              handleSubmit();
-            }
-          }}
-          maxLength={combo[currentIndex]?.length || 10}
-        />
-
-        <div className='mt-4 w-full text-left'>
-          Guesses: {guesses}
         </div>
       </div>
 
