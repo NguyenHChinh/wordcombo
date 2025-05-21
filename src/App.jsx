@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
+import { supabase } from './supabase'
 import './App.css'
 
 function formatDate(date) {
@@ -20,21 +21,49 @@ function getDaySuffix(day) {
   }
 }
 
+export async function fetchTodayCombo() {
+  const today = new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
+
+  const { data, error } = await supabase
+    .from('combos')
+    .select('words')
+    .eq('combo_date', today)
+    .single();
+
+  if (error) throw error;
+  return data.words;
+}
+
 function App() {
   const [combo, setCombo] = useState([])
-  const [hints, setHints] = useState([0, 1, 1, 1, 1, 1 , 1])
+  const [hints, setHints] = useState([0, 0, 0, 0, 0, 0 , 0])
   const [currentIndex, setCurrentIndex] = useState(1)
   const [shownCombo, setShownCombo] = useState([])
   const [input, setInput] = useState('')
   const [guesses, setGuesses] = useState(0)
   const [evaluation, setEvaluation] = useState('')
   const [gameOver, setGameOver] = useState(false);
+  const [vertical, setVertical] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const shakeTimeoutRef = useRef(null);
 
   useEffect(() => {
-    setCombo(['SNOW', 'BALL', 'GAME', 'NIGHT', 'CLUB', 'HOUSE', 'PLANT']);
-  }, [])
+    async function loadCombo() {
+      try {
+        const words = await fetchTodayCombo();
+        setCombo(words);
+      } catch (err) {
+        console.error("Failed to fetch today's combo:", err.message);
+        setCombo(['NOOO', 'NOOO', 'NOOO', 'NOOO', 'NOOO', 'NOOO', 'NOOO']);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadCombo();
+  }, []);
+
 
   useEffect(() => {
     if (combo.length === 0) return;
@@ -147,6 +176,15 @@ function App() {
     }
   }
 
+  const card0 = currentIndex >= 2 ? combo[currentIndex - 2] : '';
+  const card1 = currentIndex >= 1 ? combo[currentIndex - 1] : '';
+  const card2 = shownCombo[currentIndex] || '';
+  const card3 = shownCombo[currentIndex + 1] || '';
+
+  if (loading) {
+    return <div className="text-slate-100 text-center mt-10">Loading today's combo...</div>;
+  }
+
   return (
     <div className='app-container flex flex-col items-center justify-center text-slate-100'>
       {/* Header */}
@@ -160,18 +198,47 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <div className='main-container flex flex-col items-center justify-center mt-8 w-full max-w-md bg-slate-600 rounded-xl p-8'>
-        <div className='combo-container'>
-          {shownCombo.map((word, index) => (
-            <div
-              key={index}
-              className={`word-container flex items-center justify-center ${(index === currentIndex) ? `scale-110 bg-slate-800 + ${evaluation}` : ''} ${index === currentIndex - 1 ? 'scale-105 bg-slate-700' : 'bg-slate-400'} rounded-xl px-10 py-.5 m-3 transition-all duration-300`}>
-              <div className='bg-transparent my-2'>
-                <h2 className='text-3xl tracking-widest font-semibold'>{word}</h2>
+      <div className='main-container flex flex-col items-center justify-center mt-8 w-full max-w-sm bg-slate-600 rounded-xl p-8'>
+        {/* Vertical Setup */}
+        {vertical && (
+          <div className='combo-container'>
+            {shownCombo.map((word, index) => (
+              <div
+                key={index}
+                className={`word-container flex items-center justify-center ${(index === currentIndex) ? `scale-110 bg-slate-800 + ${evaluation}` : ''} ${index === currentIndex - 1 ? 'scale-105 bg-slate-700' : 'bg-slate-400'} rounded-xl px-10 py-.5 m-3 transition-all duration-300`}>
+                <div className='bg-transparent my-2'>
+                  <h2 className='text-3xl tracking-widest font-semibold'>{word}</h2>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
+
+        {/* Horizontal Setup */}
+        {!vertical && (
+          <div className="combo-container flex items-center justify-center overflow-hidden transition-all duration-500">
+            {[card0, card1, card2, card3].map((word, i) => {
+              const isOuter = i === 0 || i === 3;
+              const isCenter = i === 1 || i === 2;
+
+              return (
+                <div
+                  key={i}
+                  className={`word-container flex items-center justify-center
+                    ${isCenter ? 'scale-105 bg-slate-700 mx-2' : 'scale-60 bg-slate-500 mx-1'} 
+                    ${i === 0 ? 'origin-right' : ''}
+                    ${i === 3 ? 'origin-left' : ''}
+                    ${i === 2 ? `${evaluation}` : ''}
+                    rounded-2xl px-6 py-3 h-20 w-28 transition-all duration-300`}
+                >
+                  <h2 className='text-2xl tracking-widest font-semibold'>
+                    {word || ''}
+                  </h2>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Input Field */}
         <div className='input-container flex flex-col items-center justify-center mt-6 w-3/5 max-w-md'>
