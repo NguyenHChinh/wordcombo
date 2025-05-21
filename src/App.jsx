@@ -114,6 +114,11 @@ function App() {
       setInput('');
       setCurrentIndex(currentIndex + 1);
       setGuesses(guesses + 1);
+
+      if (currentIndex == combo.length - 1) {
+        setCurrentIndex(1000);
+        setGameOver(true);
+      }
     }
     // Incorrect Answer
     else {
@@ -139,11 +144,6 @@ function App() {
           shakeTimeoutRef.current = null;
         }, 3000);
       }, 0);
-    }
-
-    if (currentIndex == combo.length - 1) {
-      setCurrentIndex(1000);
-      setGameOver(true);
     }
   }
 
