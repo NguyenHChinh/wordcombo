@@ -160,14 +160,14 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <div className='main-container flex flex-col items-center justify-center mt-8 w-full max-w-md bg-slate-900 rounded-xl p-8'>
-        <div className='combo-container mt-8'>
+      <div className='main-container flex flex-col items-center justify-center mt-8 w-full max-w-md bg-slate-600 rounded-xl p-8'>
+        <div className='combo-container'>
           {shownCombo.map((word, index) => (
             <div
               key={index}
-              className={`word-container flex items-center justify-center ${(index === currentIndex) ? `scale-110 bg-slate-600 + ${evaluation}` : ''} ${index === currentIndex - 1 ? 'scale-105 bg-slate-500' : 'bg-slate-400'} rounded-xl px-10 py-.5 m-3 transition-all duration-300`}>
+              className={`word-container flex items-center justify-center ${(index === currentIndex) ? `scale-110 bg-slate-800 + ${evaluation}` : ''} ${index === currentIndex - 1 ? 'scale-105 bg-slate-700' : 'bg-slate-400'} rounded-xl px-10 py-.5 m-3 transition-all duration-300`}>
               <div className='bg-transparent my-2'>
-                <h2 className='text-2xl tracking-widest font-semibold'>{word}</h2>
+                <h2 className='text-3xl tracking-widest font-semibold'>{word}</h2>
               </div>
             </div>
           ))}
@@ -188,7 +188,7 @@ function App() {
             maxLength={combo[currentIndex]?.length || 10}
           />
 
-          <div className='mt-4 w-full text-left'>
+          <div className='mt-2 w-full text-left'>
             Guesses: {guesses}
           </div>
         </div>
