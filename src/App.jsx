@@ -1,6 +1,25 @@
 import { useEffect, useState, useRef } from 'react'
 import './App.css'
 
+function formatDate(date) {
+  const options = { month: 'short' };
+  const day = date.getDate();
+  const dayWithSuffix = day + getDaySuffix(day);
+  const month = date.toLocaleString('en-US', options);
+  const year = date.getFullYear();
+  return `${month} ${dayWithSuffix}, ${year}`;
+}
+
+function getDaySuffix(day) {
+  if (day >= 11 && day <= 13) return 'th';
+  switch (day % 10) {
+    case 1: return 'st';
+    case 2: return 'nd';
+    case 3: return 'rd';
+    default: return 'th';
+  }
+}
+
 function App() {
   const [combo, setCombo] = useState([])
   const [hints, setHints] = useState([0, 1, 1, 1, 1, 1 , 1])
@@ -134,7 +153,7 @@ function App() {
       <h1 className='absolute text-3xl font-bold text-center top-10 border-2 px-4 py-3 rounded-2xl'>
         WordCombo<span className='text-lg text-slate-600'>.app</span>
         <span className='px-2'>|</span>
-        {new Date().toLocaleDateString()}
+        {formatDate(new Date())}
       </h1>
 
       {/* Main Content */}
