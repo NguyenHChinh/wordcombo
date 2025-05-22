@@ -43,6 +43,7 @@ function App() {
   const [guesses, setGuesses] = useState(0)
   const [evaluation, setEvaluation] = useState('')
   const [gameOver, setGameOver] = useState(false);
+  const [gameOverMenu, setGameOverMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -147,6 +148,7 @@ function App() {
       if (currentIndex == combo.length - 1) {
         setCurrentIndex(1000);
         setGameOver(true);
+        setGameOverMenu(true);
       }
     }
     // Incorrect Answer
@@ -203,12 +205,21 @@ function App() {
 
       {/* Main Content */}
       <div className='main-container flex flex-col items-center justify-center mt-8 w-full max-w-sm bg-slate-600 rounded-xl p-8'>
-        {/* Vertical Setup */}
         <div className='combo-container'>
           {shownCombo.map((word, index) => (
             <div
               key={index}
-              className={`word-container flex items-center justify-center ${(index === currentIndex) ? `scale-110 bg-slate-800 + ${evaluation}` : ''} ${index === currentIndex - 1 ? 'scale-105 bg-slate-700' : 'bg-slate-400'} rounded-xl px-10 py-.5 m-3 transition-all duration-300`}>
+              className={`word-container flex items-center justify-center rounded-xl px-10 py-.5 m-3 transition-all duration-300
+                ${
+                  gameOver
+                    ? 'bg-slate-800'
+                    : index === currentIndex
+                    ? `scale-110 bg-slate-800 ${evaluation}`
+                    : index === currentIndex - 1
+                    ? 'scale-105 bg-slate-700'
+                    : 'bg-slate-400'
+                }
+                `}>
               <div className='bg-transparent my-2'>
                 <h2 className='text-3xl tracking-widest font-semibold'>{word}</h2>
               </div>
@@ -235,9 +246,21 @@ function App() {
             Guesses: {guesses}
           </div>
         </div>
+
+        {/* Menu Back Up */}
+        {gameOver && (
+          <div className="fixed bottom-6 right-6 z-50">
+            <button
+              onClick={() => setGameOverMenu(true)}
+              className="bg-slate-800 hover:bg-slate-700 text-white text-xl font-semibold px-4 py-2 rounded-xl shadow-lg transition-colors"
+            >
+              📝 View Results
+            </button>
+          </div>
+        )}
       </div>
 
-      {gameOver && (
+      {gameOverMenu && (
         <div className="absolute flex flex-col items-center justify-center bg-slate-900 text-white p-16 rounded-4xl shadow-lg/25">
           <h1 className="text-4xl md:text-4xl font-bold text-green-400 mb-4">🎉 Congratulations! 🎉</h1>
           <p className="text-lg md:text-xl mb-6 text-center">You completed the word combo!</p>
@@ -257,7 +280,7 @@ function App() {
             </button>
             <button
               className="bg-slate-700 hover:bg-slate-800 px-4 py-2 rounded-xl text-white font-semibold"
-              onClick={() => setGameOver(false)}
+              onClick={() => setGameOverMenu(false)}
             >
               Close
             </button>
