@@ -43,7 +43,7 @@ function App() {
   const [guesses, setGuesses] = useState(0)
   const [evaluation, setEvaluation] = useState('')
   const [gameOver, setGameOver] = useState(false);
-  const [vertical, setVertical] = useState(true);
+  const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const shakeTimeoutRef = useRef(null);
@@ -176,10 +176,14 @@ function App() {
     }
   }
 
-  const card0 = currentIndex >= 2 ? combo[currentIndex - 2] : '';
-  const card1 = currentIndex >= 1 ? combo[currentIndex - 1] : '';
-  const card2 = shownCombo[currentIndex] || '';
-  const card3 = shownCombo[currentIndex + 1] || '';
+  const handleShare = () => {
+    const text = `I finished today's WordCombo in ${guesses} guess${guesses !== 1 ? 'es' : ''}! 🧩 🎉\nGive it a try at https://wordcombo.app`;
+    
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
 
   if (loading) {
     return <div className="text-slate-100 text-center mt-10">Loading today's combo...</div>;
@@ -200,45 +204,17 @@ function App() {
       {/* Main Content */}
       <div className='main-container flex flex-col items-center justify-center mt-8 w-full max-w-sm bg-slate-600 rounded-xl p-8'>
         {/* Vertical Setup */}
-        {vertical && (
-          <div className='combo-container'>
-            {shownCombo.map((word, index) => (
-              <div
-                key={index}
-                className={`word-container flex items-center justify-center ${(index === currentIndex) ? `scale-110 bg-slate-800 + ${evaluation}` : ''} ${index === currentIndex - 1 ? 'scale-105 bg-slate-700' : 'bg-slate-400'} rounded-xl px-10 py-.5 m-3 transition-all duration-300`}>
-                <div className='bg-transparent my-2'>
-                  <h2 className='text-3xl tracking-widest font-semibold'>{word}</h2>
-                </div>
+        <div className='combo-container'>
+          {shownCombo.map((word, index) => (
+            <div
+              key={index}
+              className={`word-container flex items-center justify-center ${(index === currentIndex) ? `scale-110 bg-slate-800 + ${evaluation}` : ''} ${index === currentIndex - 1 ? 'scale-105 bg-slate-700' : 'bg-slate-400'} rounded-xl px-10 py-.5 m-3 transition-all duration-300`}>
+              <div className='bg-transparent my-2'>
+                <h2 className='text-3xl tracking-widest font-semibold'>{word}</h2>
               </div>
-            ))}
-          </div>
-        )}
-
-        {/* Horizontal Setup */}
-        {!vertical && (
-          <div className="combo-container flex items-center justify-center overflow-hidden transition-all duration-500">
-            {[card0, card1, card2, card3].map((word, i) => {
-              const isOuter = i === 0 || i === 3;
-              const isCenter = i === 1 || i === 2;
-
-              return (
-                <div
-                  key={i}
-                  className={`word-container flex items-center justify-center
-                    ${isCenter ? 'scale-105 bg-slate-700 mx-2' : 'scale-60 bg-slate-500 mx-1'} 
-                    ${i === 0 ? 'origin-right' : ''}
-                    ${i === 3 ? 'origin-left' : ''}
-                    ${i === 2 ? `${evaluation}` : ''}
-                    rounded-2xl px-6 py-3 h-20 w-28 transition-all duration-300`}
-                >
-                  <h2 className='text-2xl tracking-widest font-semibold'>
-                    {word || ''}
-                  </h2>
-                </div>
-              );
-            })}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
 
         {/* Input Field */}
         <div className='input-container flex flex-col items-center justify-center mt-6 w-3/5 max-w-md'>
@@ -273,11 +249,14 @@ function App() {
           <p className="text-sm text-slate-400 mb-6">Come back tomorrow for a new challenge!</p>
 
           <div className="flex gap-4">
-            <button className="bg-green-500 hover:bg-green-600 hover:cursor-pointer px-4 py-2 rounded-xl text-white font-semibold">
-              📤 Share
+            <button
+              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl text-white font-semibold relative"
+              onClick={handleShare}
+            >
+              📤 {copied ? 'Copied!' : 'Share'}
             </button>
             <button
-              className="bg-slate-700 hover:bg-slate-800 hover:cursor-pointer px-4 py-2 rounded-xl text-white font-semibold"
+              className="bg-slate-700 hover:bg-slate-800 px-4 py-2 rounded-xl text-white font-semibold"
               onClick={() => setGameOver(false)}
             >
               Close
