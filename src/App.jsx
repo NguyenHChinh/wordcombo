@@ -197,6 +197,7 @@ function App() {
     }
   }
 
+  // Save game state to localStorage
   useEffect(() => {
     if (combo.length === 0) return;
 
@@ -300,7 +301,7 @@ function App() {
           <p className="text-lg md:text-xl mb-6 text-center">You completed the word combo!</p>
 
           <div className="bg-slate-800 p-6 rounded-2xl shadow-lg mb-6 w-full max-w-md text-center">
-            <p className="text-xl font-semibold text-yellow-300">Guesses: <span className="text-white">9</span></p>
+            <p className="text-xl font-semibold text-yellow-300">Guesses: <span className="text-white">{guesses}</span></p>
           </div>
 
           <p className="text-sm text-slate-400 mb-6">Come back tomorrow for a new challenge!</p>
