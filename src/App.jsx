@@ -34,6 +34,8 @@ export async function fetchTodayCombo() {
   return data.words;
 }
 
+const todayKey = new Date().toISOString().split('T')[0];
+
 function App() {
   const [combo, setCombo] = useState([])
   const [hints, setHints] = useState([0, 0, 0, 0, 0, 0 , 0])
@@ -54,6 +56,16 @@ function App() {
       try {
         const words = await fetchTodayCombo();
         setCombo(words);
+
+        const savedGame = JSON.parse(localStorage.getItem(`wordcombo-${todayKey}`));
+
+        if (savedGame && savedGame.combo?.join(',') === words.join(',')) {
+          setHints(savedGame.hints);
+          setCurrentIndex(savedGame.currentIndex);
+          setGuesses(savedGame.guesses);
+          setGameOver(savedGame.gameOver);
+          setGameOverMenu(savedGame.gameOverMenu);
+        }
       } catch (err) {
         console.error("Failed to fetch today's combo:", err.message);
         setCombo(['NOOO', 'NOOO', 'NOOO', 'NOOO', 'NOOO', 'NOOO', 'NOOO']);
@@ -149,6 +161,13 @@ function App() {
         setCurrentIndex(1000);
         setGameOver(true);
         setGameOverMenu(true);
+
+        const stats = JSON.parse(localStorage.getItem('wordcombo-stats') || '{}');
+        stats[todayKey] = {
+          guesses: guesses + 1,
+          completed: true,
+        };
+        localStorage.setItem('wordcombo-stats', JSON.stringify(stats));
       }
     }
     // Incorrect Answer
@@ -177,6 +196,21 @@ function App() {
       }, 0);
     }
   }
+
+  useEffect(() => {
+    if (combo.length === 0) return;
+
+    const saveData = {
+      combo,
+      hints,
+      currentIndex,
+      guesses,
+      gameOver,
+      gameOverMenu
+    };
+
+    localStorage.setItem(`wordcombo-${todayKey}`, JSON.stringify(saveData));
+  }, [combo, hints, currentIndex, guesses, gameOver, gameOverMenu]);
 
   const handleShare = () => {
     const text = `I finished today's WordCombo in ${guesses} guess${guesses !== 1 ? 'es' : ''}! 🧩 🎉\nGive it a try at https://wordcombo.app`;
