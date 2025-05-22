@@ -238,12 +238,12 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <div className='main-container flex flex-col items-center justify-center mt-8 w-full max-w-sm bg-slate-600 rounded-xl p-8'>
+      <div className='main-container inset-shadow-sm/50 flex flex-col items-center justify-center mt-8 w-full max-w-sm bg-slate-600 rounded-xl p-8'>
         <div className='combo-container'>
           {shownCombo.map((word, index) => (
             <div
               key={index}
-              className={`word-container flex items-center justify-center rounded-xl px-10 py-.5 m-3 transition-all duration-300
+              className={`word-container flex items-center justify-center rounded-xl px-10 py-.5 m-3 transition-all duration-300 shadow-lg/25
                 ${
                   gameOver
                     ? 'bg-slate-800'
