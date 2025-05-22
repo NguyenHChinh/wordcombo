@@ -262,14 +262,27 @@ function App() {
       </div>
 
       {gameOver && (
-        <div className='absolute w-3/5 h-2/5 bg-slate-700 rounded-xl flex flex-col items-center justify-center'>
-          <button
+        <div className="absolute flex flex-col items-center justify-center bg-slate-900 text-white p-16 rounded-4xl shadow-lg/25">
+          <h1 className="text-4xl md:text-4xl font-bold text-green-400 mb-4">🎉 Congratulations! 🎉</h1>
+          <p className="text-lg md:text-xl mb-6 text-center">You completed the word combo!</p>
+
+          <div className="bg-slate-800 p-6 rounded-2xl shadow-lg mb-6 w-full max-w-md text-center">
+            <p className="text-xl font-semibold text-yellow-300">Guesses: <span className="text-white">9</span></p>
+          </div>
+
+          <p className="text-sm text-slate-400 mb-6">Come back tomorrow for a new challenge!</p>
+
+          <div className="flex gap-4">
+            <button className="bg-green-500 hover:bg-green-600 hover:cursor-pointer px-4 py-2 rounded-xl text-white font-semibold">
+              📤 Share
+            </button>
+            <button
+              className="bg-slate-700 hover:bg-slate-800 hover:cursor-pointer px-4 py-2 rounded-xl text-white font-semibold"
               onClick={() => setGameOver(false)}
-              className="absolute top-5 right-5 text-xs sm:text-sm md:text-base font-medium text-gray-300 hover:text-red-400 border border-gray-300 px-2 sm:px-3 py-0.5 sm:py-1 rounded">
+            >
               Close
-          </button>
-          <h2 className='text-2xl font-bold text-center mb-4'>Today solved!</h2>
-          <p className='text-lg px-6 text-center'>You completed the combo in {guesses} guesses!</p>
+            </button>
+          </div>
         </div>
       )}
     </div>
