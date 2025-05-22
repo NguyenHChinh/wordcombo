@@ -22,7 +22,7 @@ function getDaySuffix(day) {
 }
 
 export async function fetchTodayCombo() {
-  const today = new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
+  const today = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD' in local time
 
   const { data, error } = await supabase
     .from('combos')
