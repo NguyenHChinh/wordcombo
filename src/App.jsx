@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from './supabase'
+import HowToPlayModal from './HowToPlayModal.jsx'
 import './App.css'
 
 function formatDate(date) {
@@ -48,6 +49,7 @@ function App() {
   const [gameOverMenu, setGameOverMenu] = useState(false);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   const shakeTimeoutRef = useRef(null);
 
@@ -75,6 +77,12 @@ function App() {
     }
 
     loadCombo();
+
+    const seenTutorial = localStorage.getItem('seenTutorial');
+    if (!seenTutorial) {
+      setShowModal(true);
+      localStorage.setItem('seenTutorial', 'true');
+    }
   }, []);
 
 
@@ -228,6 +236,8 @@ function App() {
 
   return (
     <div className='app-container flex flex-col items-center justify-center text-slate-100'>
+      <HowToPlayModal isOpen={showModal} onClose={() => setShowModal(false)}/>
+
       {/* Header */}
       <div className='header-container border-b-2 border-slate-500 w-full max-w-md p-8'>
         <h1 className='text-5xl text-center mt-2'>
@@ -283,16 +293,26 @@ function App() {
         </div>
 
         {/* Menu Back Up */}
-        {gameOver && (
-          <div className="fixed bottom-6 right-6 z-50">
-            <button
-              onClick={() => setGameOverMenu(true)}
-              className="bg-slate-800 hover:bg-slate-700 text-white text-xl font-semibold px-4 py-2 rounded-xl shadow-lg transition-colors"
-            >
-              📝 View Results
-            </button>
-          </div>
-        )}
+<div className='bottom-right-container fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2'>
+  <div className='help-button-container'>
+    <button
+      onClick={() => setShowModal(true)}
+      className='w-12 sm:w-55 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white text-xl font-semibold px-4 py-2 rounded-xl shadow-lg transition-all'
+    >
+      ❓<span className="hidden sm:inline"> How to Play</span>
+    </button>
+  </div>
+  {gameOver && (
+    <div className='menu-button-container'>
+      <button
+        onClick={() => setGameOverMenu(true)}
+        className='w-12 sm:w-55 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white text-xl font-semibold px-4 py-2 rounded-xl shadow-lg transition-all'
+      >
+        📝<span className="hidden sm:inline"> View Results</span>
+      </button>
+    </div>
+  )}
+</div>
       </div>
 
       {gameOverMenu && (
