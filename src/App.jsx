@@ -276,8 +276,20 @@ function App() {
           ))}
         </div>
 
+        {/* Remaining Words */}
+        <div className='remaining-words-container flex items-center text-center justify-center mt-2'>
+          <h1>
+            {(currentIndex < 100) ? (
+              `Question ${currentIndex} of ${combo.length - 1}`
+            ) : (
+              `You made it to the end!`
+            )
+            }
+          </h1>
+        </div>
+
         {/* Input Field */}
-        <div className='input-container flex flex-col items-center justify-center mt-6 w-3/5 max-w-md'>
+        <div className='input-container flex flex-col items-center justify-center mt-4 w-3/5 max-w-md'>
           <input
             className='border-2 border-gray-300 rounded-lg p-2 text-center text-2xl text-slate-700 w-full bg-white'
             type='text'
