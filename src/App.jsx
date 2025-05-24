@@ -170,6 +170,9 @@ function App() {
         setGameOver(true);
         setGameOverMenu(true);
 
+        const input = document.activeElement;
+        if (input && input.blur) input.blur();
+
         const stats = JSON.parse(localStorage.getItem('wordcombo-stats') || '{}');
         stats[todayKey] = {
           guesses: guesses + 1,
@@ -251,7 +254,7 @@ function App() {
       {/* Main Content */}
       <div className='main-container inset-shadow-sm/50 flex flex-col items-center justify-center mt-8 w-full max-w-sm bg-slate-600 rounded-xl p-8'>
         <div className='combo-container'>
-          {shownCombo.map((word, index) => (
+          {shownCombo.slice(0, currentIndex + 1).map((word, index) => (
             <div
               key={index}
               className={`word-container flex items-center justify-center rounded-xl px-10 py-.5 m-3 transition-all duration-300 shadow-lg/25
@@ -264,7 +267,8 @@ function App() {
                     ? 'scale-105 bg-slate-700'
                     : 'bg-slate-400'
                 }
-                `}>
+              `}
+            >
               <div className='bg-transparent my-2'>
                 <h2 className='text-3xl tracking-widest font-semibold'>{word}</h2>
               </div>
@@ -293,31 +297,31 @@ function App() {
         </div>
 
         {/* Menu Back Up */}
-<div className='bottom-right-container fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2'>
-  <div className='help-button-container'>
-    <button
-      onClick={() => setShowModal(true)}
-      className='w-12 sm:w-55 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white text-xl font-semibold px-4 py-2 rounded-xl shadow-lg transition-all'
-    >
-      ❓<span className="hidden sm:inline"> How to Play</span>
-    </button>
-  </div>
-  {gameOver && (
-    <div className='menu-button-container'>
-      <button
-        onClick={() => setGameOverMenu(true)}
-        className='w-12 sm:w-55 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white text-xl font-semibold px-4 py-2 rounded-xl shadow-lg transition-all'
-      >
-        📝<span className="hidden sm:inline"> View Results</span>
-      </button>
-    </div>
-  )}
-</div>
+        <div className='bottom-right-container fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2'>
+          <div className='help-button-container'>
+            <button
+              onClick={() => setShowModal(true)}
+              className='w-12 sm:w-55 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white text-xl font-semibold px-4 py-2 rounded-xl shadow-lg transition-all'
+            >
+              ❓<span className="hidden sm:inline"> How to Play</span>
+            </button>
+          </div>
+          {gameOver && (
+            <div className='menu-button-container'>
+              <button
+                onClick={() => setGameOverMenu(true)}
+                className='w-12 sm:w-55 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white text-xl font-semibold px-4 py-2 rounded-xl shadow-lg transition-all'
+              >
+                📝<span className="hidden sm:inline"> View Results</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {gameOverMenu && (
-        <div className="absolute flex flex-col items-center justify-center bg-slate-900 text-white p-16 rounded-4xl shadow-lg/25">
-          <h1 className="text-4xl md:text-4xl font-bold text-green-400 mb-4">🎉 Congratulations! 🎉</h1>
+        <div className="absolute flex flex-col items-center justify-center bg-slate-900 text-white p-10 md:p-16 rounded-4xl shadow-lg/25">
+          <h1 className="text-2xl md:text-4xl font-bold text-green-400 mb-4">🎉 Congratulations! 🎉</h1>
           <p className="text-lg md:text-xl mb-6 text-center">You completed the word combo!</p>
 
           <div className="bg-slate-800 p-6 rounded-2xl shadow-lg mb-6 w-full max-w-md text-center">
