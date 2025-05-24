@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from './supabase'
 import HowToPlayModal from './HowToPlayModal.jsx'
+import AboutModal from './AboutModal.jsx'
+import PrivacyModal from './PrivacyModal.jsx'
 import './App.css'
 
 function formatDate(date) {
@@ -50,6 +52,10 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+
+  // About and Privacy Modals
+  const [showAbout, setShowAbout] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   const shakeTimeoutRef = useRef(null);
 
@@ -358,6 +364,27 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* Footer */}
+      <footer className="text-base text-slate-500 text-center mt-12 mb-6 pt-6 border-t border-slate-700">
+        <p>Made with ❤️ by Chinh Nguyen</p>
+        <div className="flex justify-center gap-6 mt-1 text-sm">
+          <button onClick={() => setShowAbout(true)} className="hover:text-white">About</button>
+          <button onClick={() => setShowPrivacy(true)} className="hover:text-white">Privacy</button>
+          <a
+            href="https://github.com/NguyenHChinh/wordcombo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white transition-colors"
+          >
+            GitHub
+          </a>
+          
+          <AboutModal show={showAbout} onClose={() => setShowAbout(false)} />
+          <PrivacyModal show={showPrivacy} onClose={() => setShowPrivacy(false)} />
+        </div>
+      </footer>
+
     </div>
   )
 }
