@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from './supabase'
+import { logEvent } from './utils/analytics'
 import HowToPlayModal from './HowToPlayModal.jsx'
 import AboutModal from './AboutModal.jsx'
 import PrivacyModal from './PrivacyModal.jsx'
@@ -28,7 +29,7 @@ function getDaySuffix(day) {
 
 // Function to fetch today's combo from Supabase
 export async function fetchTodayCombo() {
-  const today = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD' in local time
+  const today = todayKey;
 
   const { data, error } = await supabase
     .from('combos')
@@ -37,10 +38,11 @@ export async function fetchTodayCombo() {
     .single();
 
   if (error) throw error;
+  logEvent('attempt');
   return data.words;
 }
 
-const todayKey = new Date().toISOString().split('T')[0];
+const todayKey = new Date().toLocaleDateString('en-CA'); 
 
 function App() {
   const [combo, setCombo] = useState([])
@@ -79,7 +81,7 @@ function App() {
         }
       } catch (err) {
         console.error("Failed to fetch today's combo:", err.message);
-        setCombo(['NOOO', 'NOOO', 'NOOO', 'NOOO', 'NOOO', 'NOOO', 'NOOO']);
+        setCombo(['Error!', 'Error!', 'Error!', 'Error!', 'Error!', 'Error!', 'Error!']);
       } finally {
         setLoading(false);
       }
@@ -92,6 +94,8 @@ function App() {
       setShowModal(true);
       localStorage.setItem('seenTutorial', 'true');
     }
+
+    logEvent('visit');
   }, []);
 
 
@@ -174,6 +178,7 @@ function App() {
       setCurrentIndex(currentIndex + 1);
       setGuesses(guesses + 1);
 
+      // Game Over Logic
       if (currentIndex == combo.length - 1) {
         setCurrentIndex(1000);
         setGameOver(true);
@@ -188,6 +193,8 @@ function App() {
           completed: true,
         };
         localStorage.setItem('wordcombo-stats', JSON.stringify(stats));
+
+        logEvent('complete', { guesses: guesses + 1, success: true });
       }
     }
     // Incorrect Answer
@@ -237,9 +244,12 @@ function App() {
     const text = `I finished today's WordCombo in ${guesses} guess${guesses !== 1 ? 'es' : ''}! 🧩 🎉\nGive it a try at https://wordcombo.app`;
     
     navigator.clipboard.writeText(text).then(() => {
+      logEvent('share');
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+
+
   }
 
   if (loading) {
