@@ -5,6 +5,7 @@ import AboutModal from './AboutModal.jsx'
 import PrivacyModal from './PrivacyModal.jsx'
 import './App.css'
 
+// Function to format the date in "MMM DDth, YYYY" format
 function formatDate(date) {
   const options = { month: 'short' };
   const day = date.getDate();
@@ -14,6 +15,7 @@ function formatDate(date) {
   return `${month} ${dayWithSuffix}, ${year}`;
 }
 
+// Function to get the appropriate suffix for the day
 function getDaySuffix(day) {
   if (day >= 11 && day <= 13) return 'th';
   switch (day % 10) {
@@ -24,6 +26,7 @@ function getDaySuffix(day) {
   }
 }
 
+// Function to fetch today's combo from Supabase
 export async function fetchTodayCombo() {
   const today = new Date().toLocaleDateString('en-CA'); // 'YYYY-MM-DD' in local time
 
