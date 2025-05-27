@@ -18,6 +18,11 @@ function getVisitorId() {
 }
 
 export async function logEvent(event, metadata = {}) {
+  // only log from the live site
+  if (typeof window !== 'undefined'
+      && window.location.hostname !== 'wordcombo.app') {
+    return;
+  }
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
   const device_type = isMobile ? 'mobile' : 'desktop';
   const visitor_id = getVisitorId();
