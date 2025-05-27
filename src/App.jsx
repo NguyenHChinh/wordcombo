@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from './supabase'
 import { logEvent } from './utils/analytics'
@@ -42,6 +43,19 @@ export async function fetchTodayCombo() {
   return data.words;
 }
 
+// Calculate the current streak based on localStorage
+function calculateStreak() {
+  let count = 0;
+  for (let i = 0; ; i++) {
+    const dt = new Date(Date.now() - i * 864e5);
+    const key = `wordcombo-${dt.toLocaleDateString('en-CA')}`;
+    const data = JSON.parse(localStorage.getItem(key));
+    if (data?.gameOver) count++;
+    else break;
+  }
+  return count;
+}
+
 const todayKey = new Date().toLocaleDateString('en-CA'); 
 
 function App() {
@@ -57,6 +71,7 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [streak, setStreak] = useState(0);
 
   // About and Privacy Modals
   const [showAbout, setShowAbout] = useState(false);
@@ -64,6 +79,7 @@ function App() {
 
   const shakeTimeoutRef = useRef(null);
 
+  // Initial mount
   useEffect(() => {
     async function loadCombo() {
       try {
@@ -81,6 +97,7 @@ function App() {
         }
       } catch (err) {
         console.error("Failed to fetch today's combo:", err.message);
+        // TODO: Load a default combo instead of this
         setCombo(['Error!', 'Error!', 'Error!', 'Error!', 'Error!', 'Error!', 'Error!']);
       } finally {
         setLoading(false);
@@ -184,8 +201,8 @@ function App() {
         setGameOver(true);
         setGameOverMenu(true);
 
-        const input = document.activeElement;
-        if (input && input.blur) input.blur();
+        const inputEl = document.activeElement;
+        if (inputEl && inputEl.blur) inputEl.blur();
 
         const stats = JSON.parse(localStorage.getItem('wordcombo-stats') || '{}');
         stats[todayKey] = {
@@ -240,6 +257,13 @@ function App() {
     localStorage.setItem(`wordcombo-${todayKey}`, JSON.stringify(saveData));
   }, [combo, hints, currentIndex, guesses, gameOver, gameOverMenu]);
 
+  useEffect(() => {
+    if (gameOver) {
+      const updated = calculateStreak();
+      setStreak(updated);
+  }
+  }, [gameOver]);
+
   const handleShare = () => {
     const text = `I finished today's WordCombo in ${guesses} guess${guesses !== 1 ? 'es' : ''}! 🧩 🎉\nGive it a try at https://wordcombo.app`;
     
@@ -248,8 +272,6 @@ function App() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
-
-
   }
 
   if (loading) {
@@ -276,7 +298,7 @@ function App() {
           {shownCombo.slice(0, currentIndex + 1).map((word, index) => (
             <div
               key={index}
-              className={`word-container flex items-center justify-center rounded-xl px-10 py-.5 m-3 transition-all duration-300 shadow-lg/25
+              className={`word-container flex items-center justify-center rounded-xl px-10 py-0.5 m-3 transition-all duration-300 shadow-lg/25
                 ${
                   gameOver
                     ? 'bg-slate-800'
@@ -355,11 +377,23 @@ function App() {
           <h1 className="text-2xl md:text-4xl font-bold text-green-400 mb-4">🎉 Congratulations! 🎉</h1>
           <p className="text-lg md:text-xl mb-6 text-center">You completed the word combo!</p>
 
-          <div className="bg-slate-800 p-6 rounded-2xl shadow-lg mb-6 w-full max-w-md text-center">
-            <p className="text-xl font-semibold text-yellow-300">Guesses: <span className="text-white">{guesses}</span></p>
-          </div>
+    {/* Combined stats card */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-800 p-6 rounded-2xl shadow-lg mb-6 w-full max-w-md">
+      {/* Guesses */}
+      <div className="flex flex-col items-center">
+        <span className="uppercase text-sm text-slate-400 mb-1">Guesses</span>
+        <span className="text-3xl font-bold text-yellow-300">{guesses}</span>
+      </div>
+      {/* Streak */}
+      <div className="flex flex-col items-center">
+        <span className="uppercase text-sm text-slate-400 mb-1">Streak</span>
+        <span className="text-3xl font-bold text-green-400">
+          {streak} day{streak !== 1 ? 's' : ''}
+        </span>
+      </div>
+    </div>
 
-          <p className="text-sm text-slate-400 mb-6">Come back tomorrow for a new challenge!</p>
+          <p className="text-md text-slate-400 mb-6">Come back tomorrow for a new challenge 🔥</p>
 
           <div className="flex gap-4">
             <button
