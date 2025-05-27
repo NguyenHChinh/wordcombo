@@ -29,17 +29,22 @@ function getDaySuffix(day) {
 }
 
 // Function to fetch today's combo from Supabase
-export async function fetchTodayCombo() {
-  const today = todayKey;
+async function fetchTodayCombo() {
 
   const { data, error } = await supabase
     .from('combos')
     .select('words')
-    .eq('combo_date', today)
+    .eq('combo_date', todayKey)
     .single();
 
   if (error) throw error;
-  logEvent('attempt');
+
+  // Dedupe "attempt" once per day
+  const attemptKey = `wordcombo-attempt-${todayKey}`;
+  if (!localStorage.getItem(attemptKey)) {
+    logEvent('attempt');
+    localStorage.setItem(attemptKey, '1');
+  }
   return data.words;
 }
 
@@ -112,7 +117,12 @@ function App() {
       localStorage.setItem('seenTutorial', 'true');
     }
 
-    logEvent('visit');
+    // Dedupe "visit" once per calendar day
+    const visitKey = `wordcombo-visit-${todayKey}`;
+    if (!localStorage.getItem(visitKey)) {
+      logEvent('visit');
+      localStorage.setItem(visitKey, '1');
+    }
   }, []);
 
 
