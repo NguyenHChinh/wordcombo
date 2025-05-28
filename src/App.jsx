@@ -363,7 +363,10 @@ function App() {
         <div className='bottom-right-container fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2'>
           <div className='help-button-container'>
             <button
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                setShowModal(true);
+                setGameOverMenu(false);
+              }}
               className='w-12 sm:w-55 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white text-xl font-semibold px-4 py-2 rounded-xl shadow-lg transition-all'
             >
               ❓<span className="hidden sm:inline"> How to Play</span>
@@ -372,7 +375,10 @@ function App() {
           {gameOver && (
             <div className='menu-button-container'>
               <button
-                onClick={() => setGameOverMenu(true)}
+                onClick={() => {
+                  setGameOverMenu(true);
+                  setShowModal(false);
+                }}
                 className='w-12 sm:w-55 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white text-xl font-semibold px-4 py-2 rounded-xl shadow-lg transition-all'
               >
                 📝<span className="hidden sm:inline"> View Results</span>
@@ -402,22 +408,20 @@ function App() {
         </span>
       </div>
     </div>
-
-          <p className="text-md text-slate-400 mb-6">Come back tomorrow for a new challenge 🔥</p>
-
-          <div className="flex gap-4">
-            <button
-              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl text-white font-semibold relative"
-              onClick={handleShare}
-            >
-              📤 {copied ? 'Copied!' : 'Share'}
-            </button>
-            <button
-              className="bg-slate-700 hover:bg-slate-800 px-4 py-2 rounded-xl text-white font-semibold"
-              onClick={() => setGameOverMenu(false)}
-            >
-              Close
-            </button>
+      <p className="text-md text-slate-400 mb-6">Come back tomorrow for a new challenge 🔥</p>
+        <div className="flex gap-4">
+          <button
+            className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl text-white font-semibold relative"
+            onClick={handleShare}
+          >
+            📤 {copied ? 'Copied!' : 'Share'}
+          </button>
+          <button
+            className="bg-slate-700 hover:bg-slate-800 px-4 py-2 rounded-xl text-white font-semibold"
+            onClick={() => setGameOverMenu(false)}
+          >
+            Close
+          </button>
           </div>
         </div>
       )}
