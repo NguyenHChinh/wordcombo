@@ -342,8 +342,14 @@ function App() {
         {/* Input Field */}
         <div className='input-container flex flex-col items-center justify-center mt-4 w-3/5 max-w-md'>
           <input
-            className='border-2 border-gray-300 rounded-lg p-2 text-center text-2xl text-slate-700 w-full bg-white'
-            type='text'
+            disabled={gameOver}
+            className={`
+              border-2 rounded-lg p-2 text-center text-2xl w-full
+              ${gameOver
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-50'
+                : 'bg-white text-slate-700 border-gray-300'}
+            `}
+            type="text"
             value={input}
             onChange={handleInputChange}
             onKeyDown={(e) => {
