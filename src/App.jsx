@@ -9,7 +9,7 @@ import './App.css'
 
 // Function to format the date in "MMM DDth, YYYY" format
 function formatDate(date) {
-  const options = { month: 'short' };
+  const options = { month: 'long' };
   const day = date.getDate();
   const dayWithSuffix = day + getDaySuffix(day);
   const month = date.toLocaleString('en-US', options);
