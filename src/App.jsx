@@ -39,12 +39,6 @@ async function fetchTodayCombo() {
 
   if (error) throw error;
 
-  // Dedupe "attempt" once per day
-  const attemptKey = `wordcombo-attempt-${todayKey}`;
-  if (!localStorage.getItem(attemptKey)) {
-    logEvent('attempt');
-    localStorage.setItem(attemptKey, '1');
-  }
   return data.words;
 }
 
@@ -188,13 +182,19 @@ function App() {
     if (input.length != combo[currentIndex].length) {
       return;
     }
-    console.log("Input submitted:", input);
 
     if (shakeTimeoutRef.current) {
       clearTimeout(shakeTimeoutRef.current);
       shakeTimeoutRef.current = null;
     }
     setEvaluation("");
+
+    // Dedupe "attempt" once per day
+    const attemptKey = `wordcombo-attempt-${todayKey}`;
+    if (!localStorage.getItem(attemptKey)) {
+      logEvent('attempt');
+      localStorage.setItem(attemptKey, '1');
+    }
 
     // Correct Answer
     if (input === combo[currentIndex]) {
